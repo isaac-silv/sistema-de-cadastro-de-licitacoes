@@ -17,7 +17,8 @@ final class LicitacoesController extends AbstractController
 {
     public function __construct(
         private LicitacaoService $LicitacaoService,
-        private ValidatorInterface $validator
+        private ValidatorInterface $validator,
+        private LicitacaoRepository $licitacaoRepository
     ) {}
 
     #[Route('/licitacoes', name: 'listar_licitacoes', methods: ['GET'])]
@@ -32,7 +33,6 @@ final class LicitacoesController extends AbstractController
     #[Route('/licitacoes', name: 'criar_licitacao', methods: ['POST'])]
     public function create(
         Request $request,
-        LicitacaoService $licitacaoService
     ): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
@@ -64,6 +64,13 @@ final class LicitacoesController extends AbstractController
             ], 400);
         }
 
+        // Verifica licitação existente através do numero do edital
+        $licitacaoExistente = $this->licitacaoRepository->findByEdital($dto->numeroEdital);
+        if($licitacaoExistente !== null) {
+            return $this->json([
+                'message' => 'Já existe uma licitação com está numeração de edital'
+            ]);
+        }
 
         try {
             $this->LicitacaoService->criarLicitacao($dto);

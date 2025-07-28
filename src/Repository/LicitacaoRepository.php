@@ -16,10 +16,21 @@ class LicitacaoRepository extends ServiceEntityRepository
         parent::__construct($registry, Licitacao::class);
     }
 
+    // Cria uma nova licitação
     public function save(Licitacao $licitacao): void
     {
         $this->getEntityManager()->persist($licitacao);
         $this->getEntityManager()->flush();
+    }
+
+    //Verifica se já existe uma licitação pelo numero do edital
+    public function findByEdital(string $numeroEdital): ?Licitacao
+    {
+        return $this->createQueryBuilder('l')
+        ->andWhere('l.numeroEdital = :numeroEdital')
+        ->setParameter('numeroEdital', $numeroEdital)
+        ->getQuery()
+        ->getOneOrNullResult();
     }
 
     //    /**
