@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Dto\CreateLicitacaoDto;
+use App\Dto\FindLicitacaoDto;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
@@ -15,19 +16,10 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 final class LicitacoesController extends AbstractController
 {
     public function __construct(
-        private LicitacaoService $LicitacaoService,
+        private LicitacaoService $licitacaoService,
         private ValidatorInterface $validator,
         private LicitacaoRepository $licitacaoRepository
     ) {}
-
-    #[Route('/licitacoes', name: 'listar_licitacoes', methods: ['GET'])]
-    public function index(): JsonResponse
-    {
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/LicitacoesController.php',
-        ]);
-    }
 
     #[Route('/licitacoes', name: 'criar_licitacao', methods: ['POST'])]
     public function create(
@@ -73,7 +65,7 @@ final class LicitacoesController extends AbstractController
         }
 
         try {
-            $this->LicitacaoService->criarLicitacao($dto);
+            $this->licitacaoService->criarLicitacao($dto);
 
             return $this->json([
                 'message' => 'Licitação criada com sucesso!',
@@ -83,8 +75,23 @@ final class LicitacoesController extends AbstractController
             'message' => $erro->getMessage(),
         ], 404);
         }
+    }
 
-
+    #[Route('/licitacoes', name: 'listar_licitacoes', methods: ['GET'])]
+    public function listar(): JsonResponse
+    {
+        $licitacoes = $this->licitacaoService->listarLicitacoes();
+        $response = array_map(function ($licitacao){
+            return new FindLicitacaoDto([
+                'id' => $licitacao->getId(),
+                'titulo' => $licitacao->getTitulo(),
+                'numeroEdital' => $licitacao->getNumeroEdital(),
+                'orgaoResponsavel' => $licitacao->getOrgaoResponsavel(),
+                'dataPublicacao' => $licitacao->getDataPublicacao(),
+                'valorEstimado' => $licitacao->getValorEstimado()
+            ]);
+        }, $licitacoes);
+        return $this->json($response);
     }
 
 }

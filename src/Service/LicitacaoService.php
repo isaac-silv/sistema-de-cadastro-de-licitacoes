@@ -33,4 +33,9 @@ class LicitacaoService
 
         return $licitacao;
     }
+
+    public function listarLicitacoes(): array
+    {
+        return $this->licitacaoRepository->findAll();
+    }
 }
