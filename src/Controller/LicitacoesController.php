@@ -68,7 +68,7 @@ final class LicitacoesController extends AbstractController
         $licitacaoExistente = $this->licitacaoRepository->findByEdital($dto->numeroEdital);
         if($licitacaoExistente !== null) {
             return $this->json([
-                'message' => 'Já existe uma licitação com está numeração de edital'
+                'message' => 'Já existe uma licitação com esta numeração de edital'
             ]);
         }
 

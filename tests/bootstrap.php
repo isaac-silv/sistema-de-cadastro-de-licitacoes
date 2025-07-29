@@ -2,12 +2,20 @@
 
 use Symfony\Component\Dotenv\Dotenv;
 
-require dirname(__DIR__).'/vendor/autoload.php';
+require dirname(__DIR__) . '/vendor/autoload.php';
 
-if (method_exists(Dotenv::class, 'bootEnv')) {
-    (new Dotenv())->bootEnv(dirname(__DIR__).'/.env');
+if (file_exists(dirname(__DIR__) . '/.env.test')) {
+    (new Dotenv())->loadEnv(dirname(__DIR__) . '/.env.test');
 }
 
-if ($_SERVER['APP_DEBUG']) {
-    umask(0000);
-}
+// Agora já temos DATABASE_URL carregada
+$kernel = new \App\Kernel('test', true);
+$kernel->boot();
+
+$entityManager = $kernel->getContainer()->get('doctrine')->getManager();
+$metadata = $entityManager->getMetadataFactory()->getAllMetadata();
+
+$schemaTool = new \Doctrine\ORM\Tools\SchemaTool($entityManager);
+$schemaTool->dropDatabase();
+$schemaTool->createSchema($metadata);
+

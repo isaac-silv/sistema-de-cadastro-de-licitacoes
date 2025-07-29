@@ -1,0 +1,4 @@
+<php>
+    <env name="APP_ENV" value="test"/>
+    <env name="DATABASE_URL" value="pgsql://app:!ChangeMe!@127.0.0.1:5432/app_test"/>
+</php>
