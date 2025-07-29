@@ -2,7 +2,7 @@
 
 namespace App\Service;
 
-use App\Dto\LicitacaoDto;
+use App\Dto\CreateLicitacaoDto;
 use App\Entity\Licitacao;
 use App\Repository\LicitacaoRepository;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -14,7 +14,7 @@ class LicitacaoService
         private ValidatorInterface $validator
     ) {}
 
-    public function criarLicitacao(LicitacaoDto $licitacaoDto)
+    public function criarLicitacao(CreateLicitacaoDto $licitacaoDto)
     {
         $errors = $this->validator->validate($licitacaoDto);
 
@@ -27,6 +27,7 @@ class LicitacaoService
         $licitacao->setNumeroEdital($licitacaoDto->numeroEdital);
         $licitacao->setOrgaoResponsavel($licitacaoDto->orgaoResponsavel);
         $licitacao->setDataPublicacao(new \DateTime($licitacaoDto->dataPublicacao));
+        $licitacao->setValorEstimado($licitacaoDto->valorEstimado);
 
         $this->licitacaoRepository->save($licitacao);
 

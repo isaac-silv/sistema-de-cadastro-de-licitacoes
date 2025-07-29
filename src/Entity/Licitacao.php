@@ -34,6 +34,9 @@ class Licitacao
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
 
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
+    private ?string $valorEstimado = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -121,5 +124,17 @@ class Licitacao
     public function setUpdatedAtValue(): void
     {
         $this->updatedAt = new \DateTimeImmutable('now', new \DateTimeZone('America/Sao_Paulo'));
+    }
+
+    public function getValorEstimado(): ?string
+    {
+        return $this->valorEstimado;
+    }
+
+    public function setValorEstimado(?string $valorEstimado): static
+    {
+        $this->valorEstimado = $valorEstimado;
+
+        return $this;
     }
 }

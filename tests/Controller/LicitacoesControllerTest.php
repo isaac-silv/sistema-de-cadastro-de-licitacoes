@@ -9,6 +9,7 @@ class LicitacoesControllerTest extends WebTestCase
     private $client;
     private $entityManager;
 
+
     protected function setUp(): void
     {
         $this->client = static::createClient();
@@ -29,7 +30,8 @@ class LicitacoesControllerTest extends WebTestCase
             'titulo' => "Licitação Windows {$uniqueId}",
             'numeroEdital' => "WIN-{$uniqueId}/001",
             'orgaoResponsavel' => "Secretaria Windows",
-            'dataPublicacao' => (new \DateTime())->format('Y-m-d\TH:i:sP')
+            'dataPublicacao' => (new \DateTime())->format('Y-m-d\TH:i:sP'),
+            'valorEstimado' => mt_rand(0, 1000000000) / 100
         ];
 
         $this->client->request(

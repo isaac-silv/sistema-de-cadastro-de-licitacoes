@@ -2,8 +2,7 @@
 
 namespace App\Controller;
 
-use App\Dto\LicitacaoDto;
-use App\Entity\Licitacao;
+use App\Dto\CreateLicitacaoDto;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
@@ -39,15 +38,16 @@ final class LicitacoesController extends AbstractController
 
         if(!$data || !isset($data['titulo'], $data['numeroEdital'], $data['orgaoResponsavel'], $data['dataPublicacao'])) {
             return $this->json(
-                ['error' => 'Preencha todos os campos.'], 400
+                ['error' => 'Preencha todos os campos obrigatorios.'], 400
             );
         };
 
-        $dto = new LicitacaoDto();
+        $dto = new CreateLicitacaoDto();
         $dto->titulo = $data['titulo'];
         $dto->numeroEdital = $data['numeroEdital'];
         $dto->orgaoResponsavel = $data['orgaoResponsavel'];
         $dto->dataPublicacao = $data['dataPublicacao'];
+        $dto->valorEstimado = $data['valorEstimado'];
 
         $errors = $this->validator->validate($dto);
 
