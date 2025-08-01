@@ -75,7 +75,7 @@ class LicitacoesController extends AbstractController {
         }
     }
 
-    #[Route('/licitacoes/{id}', name: 'atualiza_licitacoes', methods: ['PATCH'])]
+    #[Route('/licitacoes/{id}', name: 'atualizar_licitação', methods: ['PATCH'])]
     public function atualiza(int $id, Request $request): JsonResponse {
         $data = json_decode($request->getContent(), true);
 
@@ -115,7 +115,7 @@ class LicitacoesController extends AbstractController {
             return $this->json([
                 'message' => 'Error ao autalizar licitação',
                 'error' => $error->getMessage()
-            ], 500);
+            ], 400);
         }
     }
 
@@ -142,7 +142,7 @@ class LicitacoesController extends AbstractController {
             if(!$data) {
                 return $this->json([
                     'message' => 'Nenhuma licitação encontrada'
-                ], 204);
+                ], 400);
             }
 
             $dto = new FindLicitacaoDto([
@@ -160,7 +160,23 @@ class LicitacoesController extends AbstractController {
         } catch (\Throwable $erro) {
             return $this->json([
                 'message' => 'Erro ao buscar licitação',
-            ], 500);
+                'error' => $erro->getMessage()
+            ], 400);
+        }
+    }
+
+    #[Route('/licitacoes/{id}', name: 'remover_licitacao', methods: ['DELETE'])]
+    public function remover(int $id): JsonResponse {
+        try {
+            $this->licitacaoService->removerLicitacao($id);
+            return $this->json([
+                'message' => 'Licitação removida com sucesso'
+            ]);
+        } catch (\RuntimeException $error) {
+            return $this->json([
+                'message' => 'Erro ao remover licitação',
+                'error' => $error->getMessage()
+            ], 400);
         }
     }
 

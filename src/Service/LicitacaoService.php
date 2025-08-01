@@ -63,8 +63,18 @@ class LicitacaoService {
         return $this->licitacaoRepository->findAll();
     }
 
-    public function buscarLicitacao(int $id): Licitacao {
-        return $this->licitacaoRepository->find($id);
+    public function buscarLicitacao(int $id): ?Licitacao {
+        $licitacao = $this->licitacaoRepository->find($id);
+        return $licitacao;
+    }
+
+    public function removerLicitacao(int $id): void {
+        $licitacao = $this->licitacaoRepository->find($id);
+        if($licitacao) {
+            $this->licitacaoRepository->remove($licitacao);
+        } else {
+            throw new \RuntimeException('Licitação não encontrada');
+        }
     }
 
 }

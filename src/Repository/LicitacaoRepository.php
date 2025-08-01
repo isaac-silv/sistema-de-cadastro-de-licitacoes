@@ -23,6 +23,13 @@ class LicitacaoRepository extends ServiceEntityRepository
         $this->getEntityManager()->flush();
     }
 
+    public function remove(Licitacao $licitacao, bool $flush = true): void {
+        $this->getEntityManager()->remove($licitacao);
+        if($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
     //Verifica se já existe uma licitação pelo numero do edital
     public function findByEdital(string $numeroEdital): ?Licitacao
     {

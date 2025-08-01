@@ -122,6 +122,38 @@ class LicitacoesControllerTest extends WebTestCase {
         $this->assertEquals(200000, $data['valorEstimado']);
     }
 
+    public function testRemoverLicitacaoComSucesso(): void {
+
+        $serviceMock = $this->createMock(LicitacaoService::class);
+        $serviceMock->expects($this->once())
+            ->method('removerLicitacao')
+            ->with(1);
+
+        $validatorMock = $this->createMock(ValidatorInterface::class);
+        $repositoryMock = $this->createMock(LicitacaoRepository::class);
+
+        $controller = new class($serviceMock, $validatorMock, $repositoryMock) extends LicitacoesController {
+            public function __construct($service, $validator, $repository)
+            {
+                parent::__construct($service, $validator, $repository);
+            }
+
+            protected function json($data, int $status = 200, array $headers = [], array $context = []): JsonResponse
+            {
+                return new JsonResponse($data, $status, $headers);
+            }
+        };
+
+        $response = $controller->remover(1);
+
+        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertEquals(200, $response->getStatusCode());
+
+        $data = json_decode($response->getContent(), true);
+        $this->assertEquals('Licitação removida com sucesso', $data['message']);
+    }
+
+
     protected function tearDown(): void {
         parent::tearDown();
         $this->entityManager->close();
