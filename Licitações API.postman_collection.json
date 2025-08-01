@@ -1,0 +1,188 @@
+{
+	"info": {
+		"_postman_id": "13b9333e-d057-4a37-a55a-81619d9add61",
+		"name": "Licitações API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "21889417",
+		"_collection_link": "https://restless-escape-893766.postman.co/workspace/Team-Workspace~e590b9e3-e324-4bfe-8ab8-bd9685aa91d1/collection/21889417-13b9333e-d057-4a37-a55a-81619d9add61?action=share&source=collection_link&creator=21889417"
+	},
+	"item": [
+		{
+			"name": "Criar licitação",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"titulo\": \"Construção de escola municipal\",\r\n  \"numeroEdital\": \"SME-2025/019\",\r\n  \"orgaoResponsavel\": \"Secretaria Municipal de Educação\",\r\n  \"dataPublicacao\": \"2025-08-01T09:00:00-03:00\",\r\n  \"valorEstimado\": 10000.00\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "127.0.0.1:8000/api/licitacoes",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"licitacoes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Listar licitações",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "127.0.0.1:8000/api/licitacoes",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"licitacoes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Buscar licitação",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "\r\n"
+				},
+				"url": {
+					"raw": "127.0.0.1:8000/api/licitacoes/11",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"licitacoes",
+						"11"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Atualizar licitação",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"titulo\": \"Construção de escola municipal\",\r\n  \"numeroEdital\": \"SME-2025/019\",\r\n  \"orgaoResponsavel\": \"Secretaria Municipal de Educação\",\r\n  \"dataPublicacao\": \"2025-08-15T09:00:00-03:00\",\r\n  \"valorEstimado\": 20000.00\r\n}\r\n"
+				},
+				"url": {
+					"raw": "127.0.0.1:8000/api/licitacoes/10",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"licitacoes",
+						"10"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Remover licitação",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "127.0.0.1:8000/api/licitacoes/10",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"licitacoes",
+						"10"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
