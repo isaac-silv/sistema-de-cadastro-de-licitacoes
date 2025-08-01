@@ -30,7 +30,7 @@ Este projeto é um sistema simples para **cadastrar**, **listar**, **editar**, *
 ## 📦 Instalação do Projeto
 
 ```bash
-git clone https://github.com/seuusuario/sistema-de-cadastro-de-licitacoes.git
+git clone https://github.com/isaac-silv/sistema-de-cadastro-de-licitacoes
 cd sistema-de-cadastro-de-licitacoes
 
 composer install
