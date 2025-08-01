@@ -4,17 +4,16 @@ namespace App\Controller;
 
 use App\Dto\CreateLicitacaoDto;
 use App\Dto\FindLicitacaoDto;
+use App\Dto\UpdateLicitacaoDto;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Request;
 use App\Repository\LicitacaoRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use App\Service\LicitacaoService;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-final class LicitacoesController extends AbstractController
-{
+class LicitacoesController extends AbstractController {
     public function __construct(
         private LicitacaoService $licitacaoService,
         private ValidatorInterface $validator,
@@ -56,7 +55,6 @@ final class LicitacoesController extends AbstractController
             ], 400);
         }
 
-        // Verifica licitação existente através do numero do edital
         $licitacaoExistente = $this->licitacaoRepository->findByEdital($dto->numeroEdital);
         if($licitacaoExistente !== null) {
             return $this->json([
@@ -74,6 +72,50 @@ final class LicitacoesController extends AbstractController
             return $this->json([
             'message' => $erro->getMessage(),
         ], 404);
+        }
+    }
+
+    #[Route('/licitacoes/{id}', name: 'atualiza_licitacoes', methods: ['PATCH'])]
+    public function atualiza(int $id, Request $request): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+
+        $dto = new UpdateLicitacaoDto();
+        $dto->titulo = $data['titulo'] ?? null;
+        $dto->numeroEdital = $data['numeroEdital'] ?? null;
+        $dto->orgaoResponsavel = $data['orgaoResponsavel'] ?? null;
+        $dto->dataPublicacao = isset($data['dataPublicacao']) && $data['dataPublicacao']
+            ? new \DateTime($data['dataPublicacao'])
+            : null;
+        $dto->valorEstimado = $data['valorEstimado'] ?? null;
+
+        $errors = $this->validator->validate($dto);
+        if(count($errors) > 0) {
+            $errorMessages = [];
+            foreach ($errors as $error) {
+                $errorMessages[$error->getPropertyPath()] = $error->getMessage();
+            }
+            return $this->json([
+                'message' => 'Erro ao atualizar licitação',
+                'errors' => $errorMessages
+            ], 400);
+        }
+
+        try {
+            $licitacao = $this->licitacaoService->atualizaLicitacao($id, $dto);
+            return $this->json([
+                'id' => $licitacao->getId(),
+                'titulo' => $licitacao->getTitulo(),
+                'numeroEdital' => $licitacao->getNumeroEdital(),
+                'orgaoResponsavel' => $licitacao->getOrgaoResponsavel(),
+                'dataPublicacao' => $licitacao->getDataPublicacao()->format('Y-m-d'),
+                'valorEstimado' => $licitacao->getValorEstimado()
+            ]);
+
+        } catch (\RuntimeException $error) {
+            return $this->json([
+                'message' => 'Error ao autalizar licitação',
+                'error' => $error->getMessage()
+            ], 500);
         }
     }
 
