@@ -7,8 +7,7 @@ use App\Entity\Licitacao;
 use App\Repository\LicitacaoRepository;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class LicitacaoService
-{
+class LicitacaoService {
     public function __construct(
         private LicitacaoRepository $licitacaoRepository,
         private ValidatorInterface $validator
@@ -34,8 +33,12 @@ class LicitacaoService
         return $licitacao;
     }
 
-    public function listarLicitacoes(): array
-    {
+    public function listarLicitacoes(): array {
         return $this->licitacaoRepository->findAll();
     }
+
+    public function buscarLicitacao(int $id): Licitacao {
+        return $this->licitacaoRepository->find($id);
+    }
+
 }

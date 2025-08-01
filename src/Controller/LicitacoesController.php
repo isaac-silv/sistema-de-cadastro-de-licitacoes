@@ -78,8 +78,7 @@ final class LicitacoesController extends AbstractController
     }
 
     #[Route('/licitacoes', name: 'listar_licitacoes', methods: ['GET'])]
-    public function listar(): JsonResponse
-    {
+    public function listar(): JsonResponse {
         $licitacoes = $this->licitacaoService->listarLicitacoes();
         $response = array_map(function ($licitacao){
             return new FindLicitacaoDto([
@@ -92,6 +91,35 @@ final class LicitacoesController extends AbstractController
             ]);
         }, $licitacoes);
         return $this->json($response);
+    }
+
+    #[Route('/licitacoes/{id}', name: 'buscar_licitacao', methods: ['GET'])]
+    public function buscar(int $id): JsonResponse {
+        try {
+            $data = $this->licitacaoService->buscarLicitacao($id);
+            if(!$data) {
+                return $this->json([
+                    'message' => 'Nenhuma licitação encontrada'
+                ], 204);
+            }
+
+            $dto = new FindLicitacaoDto([
+                'id' => $data->getId(),
+                'titulo' => $data->getTitulo(),
+                'numeroEdital' => $data->getNumeroEdital(),
+                'orgaoResponsavel' => $data->getOrgaoResponsavel(),
+                'dataPublicacao' => $data->getDataPublicacao(),
+                'valorEstimado' => $data->getValorEstimado()
+            ]);
+
+
+            return $this->json($dto);
+
+        } catch (\Throwable $erro) {
+            return $this->json([
+                'message' => 'Erro ao buscar licitação',
+            ], 500);
+        }
     }
 
 }

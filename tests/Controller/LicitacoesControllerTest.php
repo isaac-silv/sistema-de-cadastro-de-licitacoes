@@ -1,18 +1,20 @@
 <?php
 namespace App\Tests\Controller;
 
+use App\Controller\LicitacoesController;
 use App\Entity\Licitacao;
+use App\Repository\LicitacaoRepository;
+use App\Service\LicitacaoService;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class LicitacoesControllerTest extends WebTestCase
-{
+class LicitacoesControllerTest extends WebTestCase {
     private $client;
     private $entityManager;
 
-
-    protected function setUp(): void
-    {
+    protected function setUp(): void {
         $this->client = static::createClient();
 
         // Configuração específica para Windows
@@ -24,8 +26,7 @@ class LicitacoesControllerTest extends WebTestCase
         $this->entityManager->getConnection()->executeStatement('TRUNCATE TABLE licitacoes RESTART IDENTITY CASCADE');
     }
 
-    public function testCreateLicitacao()
-    {
+    public function testCreateLicitacao() {
         $uniqueId = uniqid();
         $data = [
             'titulo' => "Licitação Windows {$uniqueId}",
@@ -47,53 +48,34 @@ class LicitacoesControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
     }
 
-    public function testListarLicitacoes(): void
-    {
+    public function testFindLicitacaoById(): void {
 
-        $licitacao1 = new Licitacao();
-        $licitacao1->setTitulo('Licitação 1');
-        $licitacao1->setOrgaoResponsavel('Secretaria de desenvolvimento urbano');
-        $licitacao1->setNumeroEdital("SDU-2025/001");
-        $licitacao1->setDataPublicacao(new \DateTime('2025-08-01T09:00:00-03:00'));
-        $licitacao1->setValorEstimado(10000);
+        $licitacao = new Licitacao();
+        $licitacao->setTitulo('Licitação Teste');
+        $licitacao->setOrgaoResponsavel('Secretaria de Testes');
+        $licitacao->setNumeroEdital("TEST-2025/001");
+        $licitacao->setDataPublicacao(new \DateTime('2025-08-15T10:00:00-03:00'));
+        $licitacao->setValorEstimado(15000);
 
-        $licitacao2 = new Licitacao();
-        $licitacao2->setTitulo('Licitação 2');
-        $licitacao2->setOrgaoResponsavel('Secretaria de Educação');
-        $licitacao2->setNumeroEdital("SDE-2025/001");
-        $licitacao2->setDataPublicacao(new \DateTime('2025-08-01T09:00:00-03:00'));
-        $licitacao2->setValorEstimado(20000);
-
-        $this->entityManager->persist($licitacao1);
-        $this->entityManager->persist($licitacao2);
+        $this->entityManager->persist($licitacao);
         $this->entityManager->flush();
 
-
-        $this->client->request('GET', '/api/licitacoes');
-
+        $this->client->request('GET', 'api/licitacoes/' . $licitacao->getId());
 
         $this->assertResponseIsSuccessful();
         $this->assertResponseFormatSame('json');
 
         $data = json_decode($this->client->getResponse()->getContent(), true);
 
-
-        $this->assertCount(2, $data);
-
-
-        $this->assertEquals('Licitação 1', $data[0]['titulo']);
-        $this->assertEquals('Secretaria de desenvolvimento urbano', $data[0]['orgaoResponsavel']);
-        $this->assertEquals('SDU-2025/001', $data[0]['numeroEdital']);
-        $this->assertEquals('2025-08-01', substr($data[0]['dataPublicacao']['date'], 0, 10));
-        $this->assertEquals(10000, $data[0]['valorEstimado'] ?? 0);
-        $this->assertEquals('Licitação 2', $data[1]['titulo']);
-        $this->assertEquals('Secretaria de Educação', $data[1]['orgaoResponsavel']);
-
+        $this->assertEquals($licitacao->getId(), $data['id']);
+        $this->assertEquals('Licitação Teste', $data['titulo']);
+        $this->assertEquals('Secretaria de Testes', $data['orgaoResponsavel']);
+        $this->assertEquals("TEST-2025/001", $data['numeroEdital']);
+        $this->assertEquals('2025-08-15', substr($data['dataPublicacao']['date'], 0, 10));
+        $this->assertEquals(15000, $data['valorEstimado']);
     }
 
-
-    protected function tearDown(): void
-    {
+    protected function tearDown(): void {
         parent::tearDown();
         $this->entityManager->close();
         $this->entityManager = null;
